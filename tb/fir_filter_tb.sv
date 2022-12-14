@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
 module fir_filter_tb;
-  localparam WIDTH_X = 4,
-             WIDTH_B = 4,
+  localparam WIDTH_X = 8,
+             WIDTH_B = 8,
              N = 4,
              TYPE = "NORMAL",
-             WIDTH_Y = WIDTH_X + WIDTH_B,
+             WIDTH_Y = 18,
              NUM_DATA = 500;
   localparam logic [WIDTH_B-1:0] B [N] = {1, 2, 3, 4};
 

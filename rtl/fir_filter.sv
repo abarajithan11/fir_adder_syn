@@ -17,9 +17,9 @@ module fir_filter #(
 
   generate
     if (TYPE == "NORMAL") begin:GN
-      logic [WIDTH_X-1:0] z [N];
-      logic [WIDTH_M-1:0] m [N];
-      logic [WIDTH_Y-1:0] a [N];
+      logic signed [WIDTH_X-1:0] z [N];
+      logic signed [WIDTH_M-1:0] m [N];
+      logic signed [WIDTH_Y-1:0] a [N];
 
       always_ff @(posedge clk or negedge rstn)
         for (int n=0; n < N; n=n+1)
@@ -37,8 +37,8 @@ module fir_filter #(
           a[n] = a[n-1] + m[n];
 
       always_ff @(posedge clk or negedge rstn)
-        if (~rstn) y <= 0;
-        else       y <= a[N-1];
+        y <= ~rstn ? '0 : a[N-1];
+
     end
 
   endgenerate
