@@ -4,6 +4,7 @@ module fir_filter_tb;
   localparam WIDTH_X = 4,
              WIDTH_B = 4,
              N = 3,
+             TYPE = "NORMAL",
              WIDTH_Y = WIDTH_X + WIDTH_B + N + 1,
              NUM_DATA = 500;
 
@@ -19,6 +20,7 @@ module fir_filter_tb;
 
   fir_filter #(
     .N (N),
+    .TYPE(TYPE),
     .WIDTH_X (WIDTH_X),
     .WIDTH_B (WIDTH_B),
     .B (B)
