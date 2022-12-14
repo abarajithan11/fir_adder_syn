@@ -3,12 +3,12 @@
 module fir_filter_tb;
   localparam WIDTH_X = 4,
              WIDTH_B = 4,
-             N = 3,
+             N = 4,
              TYPE = "NORMAL",
-             WIDTH_Y = WIDTH_X + WIDTH_B + N + 1,
+             WIDTH_Y = WIDTH_X + WIDTH_B,
              NUM_DATA = 500;
+  localparam logic [WIDTH_B-1:0] B [N] = {1, 2, 3, 4};
 
-  localparam logic [WIDTH_B-1:0] B [N+1] = {1, 2, 3, 4};
 
   // Clock generation
   logic clk=0, rstn=0;
@@ -23,6 +23,7 @@ module fir_filter_tb;
     .TYPE(TYPE),
     .WIDTH_X (WIDTH_X),
     .WIDTH_B (WIDTH_B),
+    .WIDTH_Y (WIDTH_Y),
     .B (B)
   ) dut (.*);
 
@@ -50,8 +51,8 @@ module fir_filter_tb;
       zq = {x,zq}; zq = zq[0:$-1];
 
       sum = 0;
-      foreach (zq[i]) 
-        sum += zq[i]*B[i];
+      for (int i=1; i<=N; i=i+1)
+        sum += zq[i]*B[i-1];
       
       assert (y==sum) $display("OK: y:%d", y);
       else $display("Error: y:%d != y_exp:%d", y, sum);
