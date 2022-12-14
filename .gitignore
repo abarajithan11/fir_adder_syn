@@ -1,0 +1,4 @@
+sim/*
+
+!sim/xsim.bat
+!sim/xsim_cfg.tcl
