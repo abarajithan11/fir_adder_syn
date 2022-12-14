@@ -36,7 +36,9 @@ module fir_filter #(
         for (int n=1; n < N; n=n+1)
           a[n] = a[n-1] + m[n];
 
-      assign y = a[N-1];
+      always_ff @(posedge clk or negedge rstn)
+        if (~rstn) y <= 0;
+        else       y <= a[N-1];
     end
 
   endgenerate

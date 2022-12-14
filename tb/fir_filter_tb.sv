@@ -16,7 +16,7 @@ module fir_filter_tb;
   initial forever #(CLK_PERIOD/2) clk <= ~clk;
 
   logic signed [WIDTH_X-1:0] x=0;
-  logic signed [WIDTH_Y-1:0] y;
+  logic signed [WIDTH_Y-1:0] y, y_exp, y_exp_d;
 
   fir_filter #(
     .N (N),
@@ -31,8 +31,6 @@ module fir_filter_tb;
   logic signed [WIDTH_X-1:0] zi [N+1] = '{default:0};
   logic signed [WIDTH_X-1:0] zq [$] = zi;
 
-  int status, y_exp, sum=0;
-
   // Drive signals
   initial begin
 
@@ -45,16 +43,19 @@ module fir_filter_tb;
     $finish();
   end
 
+  always_ff @(posedge clk or negedge rstn) 
+    y_exp_d <= (~rstn) ? '0 : y_exp;  
+
   // Monitor signals
   initial forever begin
       @(posedge clk) #2
       zq = {x,zq}; zq = zq[0:$-1];
 
-      sum = 0;
+      y_exp = 0;
       for (int i=1; i<=N; i=i+1)
-        sum += zq[i]*B[i-1];
+        y_exp += zq[i]*B[i-1];
       
-      assert (y==sum) $display("OK: y:%d", y);
-      else $display("Error: y:%d != y_exp:%d", y, sum);
+      assert (y==y_exp_d) $display("OK: y:%d", y);
+      else $display("Error: y:%d != y_exp:%d", y, y_exp_d);
     end
 endmodule
