@@ -15,29 +15,28 @@ module fir_filter #(
   output logic signed [WIDTH_Y-1:0] y
 );
 
+  genvar n;
   generate
     if (TYPE == "NORMAL") begin:GN
       logic signed [WIDTH_X-1:0] z [N];
       logic signed [WIDTH_M-1:0] m [N];
       logic signed [WIDTH_Y-1:0] a [N];
 
-      always_ff @(posedge clk or negedge rstn)
-        for (int n=0; n < N; n=n+1)
+      for (n=0; n < N; n=n+1)
+        always_ff @(posedge clk or negedge rstn)
           if (~rstn) z[n] <= 0;
           else       z[n] <= n==0 ? x : z[n-1];
 
-      always_comb
-        for (int n=0; n < N; n=n+1)
-          m[n] = B[n] * z[n];
+      for (n=0; n < N; n=n+1)
+        assign m[n] = B[n] * z[n];
 
       assign a[0] = m[0];
       
-      always_comb
-        for (int n=1; n < N; n=n+1)
-          a[n] = a[n-1] + m[n];
+      for (n=1; n < N; n=n+1)
+        assign a[n] = a[n-1] + m[n];
 
       always_ff @(posedge clk or negedge rstn)
-        y <= ~rstn ? '0 : a[N-1];
+        y <= ~rstn ? 0 : a[N-1];
 
     end
 
@@ -48,18 +47,17 @@ module fir_filter #(
       logic signed [WIDTH_Y-1:0] a [N];
 
       always_ff @(posedge clk or negedge rstn)
-        x_q <= ~rstn ? '0 : x;
+        x_q <= ~rstn ? 0 : x;
       
-      always_comb
-        for (int n=0; n < N; n=n+1)
-          m[n] = B[N-1-n] * x_q;
+      for (n=0; n < N; n=n+1)
+        assign m[n] = B[N-1-n] * x_q;
       
       always_ff @(posedge clk or negedge rstn)
-        a[0] <= ~rstn ? '0 : m[0];
+        a[0] <= ~rstn ? 0 : m[0];
 
-      always_ff @(posedge clk or negedge rstn)
-        for (int n=1; n < N; n=n+1)
-          a[n] <= ~rstn ? '0 : a[n-1] + m[n];
+      for (n=1; n < N; n=n+1)
+        always_ff @(posedge clk or negedge rstn)
+          a[n] <= ~rstn ? 0 : a[n-1] + m[n];
 
       assign y = a[N-1];
 
