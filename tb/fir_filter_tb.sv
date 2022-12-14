@@ -4,7 +4,7 @@ module fir_filter_tb;
   localparam WIDTH_X = 8,
              WIDTH_B = 8,
              N = 4,
-             TYPE = "NORMAL",
+             TYPE = "OPT",
              WIDTH_Y = 18,
              NUM_DATA = 500;
   localparam logic [WIDTH_B-1:0] B [N] = {1, 2, 3, 4};

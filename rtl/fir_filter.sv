@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 module fir_filter #(
-  parameter  TYPE = "NORMAL",
+  parameter  TYPE = "OPT",
              N = 4,
              WIDTH_X = 8,
              WIDTH_B = 8,
@@ -41,6 +41,29 @@ module fir_filter #(
 
     end
 
+    else if (TYPE == "OPT") begin:GO
+
+      logic signed [WIDTH_X-1:0] x_q;
+      logic signed [WIDTH_M-1:0] m [N];
+      logic signed [WIDTH_Y-1:0] a [N];
+
+      always_ff @(posedge clk or negedge rstn)
+        x_q <= ~rstn ? '0 : x;
+      
+      always_comb
+        for (int n=0; n < N; n=n+1)
+          m[n] = B[N-1-n] * x_q;
+      
+      always_ff @(posedge clk or negedge rstn)
+        a[0] <= ~rstn ? '0 : m[0];
+
+      always_ff @(posedge clk or negedge rstn)
+        for (int n=1; n < N; n=n+1)
+          a[n] <= ~rstn ? '0 : a[n-1] + m[n];
+
+      assign y = a[N-1];
+
+    end
   endgenerate
 
 endmodule
